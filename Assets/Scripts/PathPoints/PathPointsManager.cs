@@ -7,16 +7,17 @@ using UnityEngine;
 
 public class PathPointsManager
 {
-    private List<PathPointView> _pathPoints;
+    private List<Transform> _pathPoints;
 
     public PathPointsManager(GameConfig config)
     {
-        _pathPoints = config.PathPointsHolder.GetComponentsInChildren<PathPointView>().ToList();
+        _pathPoints = config.PathPointsHolder.GetComponentsInChildren<Transform>().ToList();
+        _pathPoints.Remove(config.PathPointsHolder.transform);
     }
 
-    public List<PathPointView> GetMovePath(Transform playerPosition, PathPointView targetPoint, MoveDirectonTypes direction)
+    public List<Transform> GetMovePath(Transform playerPosition, Transform targetPoint, MoveDirectonTypes direction)
     {
-        var points = new List<PathPointView>();
+        var points = new List<Transform>();
 
         switch (direction)
         {

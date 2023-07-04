@@ -13,7 +13,7 @@ namespace MoveSystem
         private RayCastController _rayCastController;
         private PathPointsManager _pathPointsManager;
 
-        private List<PathPointView> _pathPoints;
+        private List<Transform> _pathPoints;
         private int _currentWaypointIndex;
         private bool _isMoving;
 
@@ -23,7 +23,7 @@ namespace MoveSystem
             _pathPointsManager = pathPointsManager;
             _view = gameConfig.PlayerView;
 
-            _pathPoints = new List<PathPointView>();
+            _pathPoints = new List<Transform>();
 
             _rayCastController.OnMoveAction += StartMove;
         }
@@ -41,7 +41,7 @@ namespace MoveSystem
             _currentWaypointIndex = 0;
 
             var direction = (pathPointView.transform.position.x > _view.transform.position.x) ? MoveDirectonTypes.Right : MoveDirectonTypes.Left;
-            var newPoints = _pathPointsManager.GetMovePath(_view.transform, pathPointView, direction);
+            var newPoints = _pathPointsManager.GetMovePath(_view.transform, pathPointView.transform, direction);
 
             _pathPoints.AddRange(newPoints);
             _view.NavMeshAgent.SetDestination(_pathPoints[_currentWaypointIndex].transform.position);

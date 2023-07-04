@@ -1,5 +1,6 @@
 using DG.Tweening;
 using MoveSystem;
+using UiElements;
 using UnityEngine;
 using UserInputSystem;
 
@@ -16,6 +17,8 @@ namespace Core
             var rayCastController = new RayCastController(userInputInitialization.UserInput);
             var pathPointsManager = new PathPointsManager(config);
             var playerMoveController = new PlayerMoveController(rayCastController, pathPointsManager, config);
+
+            new UiInitialization(controllersManager, config);
 
             controllersManager.Add(userInputInitialization);
             controllersManager.Add(playerMoveController);
