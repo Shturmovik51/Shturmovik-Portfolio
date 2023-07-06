@@ -6,6 +6,8 @@ namespace PathPoints
 {
     public class PathPointView : MonoBehaviour, IPathPoint
     {
+        [SerializeField] private PathPointsTypes _type;
 
+        public PathPointsTypes Type => _type;
     }
 }

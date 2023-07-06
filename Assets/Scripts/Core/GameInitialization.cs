@@ -18,7 +18,7 @@ namespace Core
             var pathPointsManager = new PathPointsManager(config);
             var playerMoveController = new PlayerMoveController(rayCastController, pathPointsManager, config);
 
-            new UiInitialization(controllersManager, config);
+            new UiInitialization(controllersManager, config, rayCastController);
 
             controllersManager.Add(userInputInitialization);
             controllersManager.Add(playerMoveController);
