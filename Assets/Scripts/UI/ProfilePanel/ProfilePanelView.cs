@@ -31,14 +31,14 @@ namespace UiElements
                 DOTween.Kill(_descriptionPanelMoveSequenceID);
                 var sequence = DOTween.Sequence();
                 sequence.SetId(_descriptionPanelMoveSequenceID);
-                sequence.Append(_mainElementsHolder.transform.DOMove(_openDescriptionPanelPosition.position, 3));
+                sequence.Append(_mainElementsHolder.transform.DOMove(_openDescriptionPanelPosition.position, 0.3f));
             }
             else
             {
                 DOTween.Kill(_descriptionPanelMoveSequenceID);
                 var sequence = DOTween.Sequence();
                 sequence.SetId(_descriptionPanelMoveSequenceID);
-                sequence.Append(_mainElementsHolder.transform.DOMove(_idelDescriptionPanelPosition.position, 3));
+                sequence.Append(_mainElementsHolder.transform.DOMove(_idelDescriptionPanelPosition.position, 0.3f));
             }
         }
     }
