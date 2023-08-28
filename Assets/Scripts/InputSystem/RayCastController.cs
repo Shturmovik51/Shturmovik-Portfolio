@@ -8,7 +8,7 @@ namespace UserInputSystem
 {
     public class RayCastController
     {
-        public Action<PathPointView> OnMoveAction;
+        public Action<PathPointView> OnClickMoveAction;
 
         private Camera _camera;
         private LayerMask _mask;
@@ -36,7 +36,7 @@ namespace UserInputSystem
             {
                 if (hit.collider.TryGetComponent<PathPointView>(out var pathPointView))
                 {
-                    OnMoveAction?.Invoke(pathPointView);
+                    OnClickMoveAction?.Invoke(pathPointView);
                 }
             }
         }

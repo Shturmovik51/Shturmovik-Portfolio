@@ -1,5 +1,6 @@
 using Core.Interfaces;
 using PathPoints;
+using PathSymbols;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,20 +13,27 @@ namespace MoveSystem
         private PlayerView _view;
         private RayCastController _rayCastController;
         private PathPointsManager _pathPointsManager;
+        private PathSymbolsPanelController _pathSymbolsPanelController;
+        private PathPointsPanelsController _pathPointsPanelsController;
 
+        private PathPointView _currentPathPoint;
         private List<Transform> _pathPoints;
         private int _currentWaypointIndex;
         private bool _isMoving;
 
-        public PlayerMoveController(RayCastController rayCastController, PathPointsManager pathPointsManager, GameConfig gameConfig)
+        public PlayerMoveController(RayCastController rayCastController, PathPointsManager pathPointsManager, GameConfig gameConfig, 
+                    PathSymbolsPanelController pathSymbolsPanelController, PathPointsPanelsController pathPointsPanelsController)
         {
             _rayCastController = rayCastController;
             _pathPointsManager = pathPointsManager;
+            _pathSymbolsPanelController = pathSymbolsPanelController;
+            _pathPointsPanelsController = pathPointsPanelsController;
             _view = gameConfig.PlayerView;
 
             _pathPoints = new List<Transform>();
 
-            _rayCastController.OnMoveAction += StartMove;
+            _rayCastController.OnClickMoveAction += StartMouseClickMove;
+            _pathSymbolsPanelController.OnSelectPathSymbol += StartSymbolClickMove;
         }
 
         public void LocalUpdate(float deltaTime)
@@ -35,17 +43,36 @@ namespace MoveSystem
             Move();
         }
 
+        private void StartSymbolClickMove(PathPointsTypes type)
+        {
+            var view = _pathPointsManager.GetPathPointView(type);            
+            StartMove(view);
+        }
+
+        private void StartMouseClickMove(PathPointView pathPointView)
+        {
+            _pathSymbolsPanelController.OnMoveActivatePathSymbol(pathPointView.PathPointType);
+            StartMove(pathPointView);
+        }
+
         private void StartMove(PathPointView pathPointView)
         {
-            _pathPoints.Clear();
-            _currentWaypointIndex = 0;
+            if (_currentPathPoint != pathPointView)
+            {
+                _currentPathPoint = pathPointView;
 
-            var direction = (pathPointView.transform.position.x > _view.transform.position.x) ? MoveDirectonTypes.Right : MoveDirectonTypes.Left;
-            var newPoints = _pathPointsManager.GetMovePath(_view.transform, pathPointView.transform, direction);
+                _pathPoints.Clear();
+                _currentWaypointIndex = 0;
 
-            _pathPoints.AddRange(newPoints);
-            _view.NavMeshAgent.SetDestination(_pathPoints[_currentWaypointIndex].transform.position);
-            _isMoving = true;
+                var direction = (pathPointView.transform.position.x > _view.transform.position.x) ? MoveDirectonTypes.Right : MoveDirectonTypes.Left;
+                var newPoints = _pathPointsManager.GetMovePath(_view.transform, pathPointView.transform, direction);
+
+                _pathPoints.AddRange(newPoints);
+                _view.NavMeshAgent.SetDestination(_pathPoints[_currentWaypointIndex].transform.position);
+                _isMoving = true;
+            } 
+
+            _pathPointsPanelsController.ActivatePointScreen(pathPointView);            
         }
 
         private void Move()
@@ -95,7 +122,8 @@ namespace MoveSystem
 
         public void CleanUp()
         {
-            _rayCastController.OnMoveAction -= StartMove;
+            _rayCastController.OnClickMoveAction -= StartMouseClickMove;
+            _pathSymbolsPanelController.OnSelectPathSymbol -= StartSymbolClickMove;
         }
     }
 }

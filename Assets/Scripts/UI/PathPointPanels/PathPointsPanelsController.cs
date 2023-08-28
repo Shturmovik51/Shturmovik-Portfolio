@@ -1,4 +1,5 @@
 using Core.Interfaces;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace PathPoints
 {
     public class PathPointsPanelsController : ICleanable, IController
     {
+        //public Action<PathPointsTypes> OnActivatePathpointPanel;
+
         private PathPointsPanelsManager _manager;
         private RayCastController _rayCastController;
         private PathPointPanelView _activePanel;
@@ -20,7 +23,7 @@ namespace PathPoints
             _manager = manager;
             _rayCastController = rayCastController;
 
-            _rayCastController.OnMoveAction += ActivatePointScreen;
+            //_rayCastController.OnMoveAction += ActivatePointScreen;
         }
 
         //public void LocalLateUpdate(float deltaTime)
@@ -38,7 +41,7 @@ namespace PathPoints
                 CloseActivePanel();
             }
 
-            var panelView = _manager.GetPathPointView(pointView.Type);
+            var panelView = _manager.GetPathPointPanelView(pointView.PathPointType);
 
             _activePanel = panelView;
             _activePoint = pointView;
@@ -47,6 +50,8 @@ namespace PathPoints
 
             _activePanel.EnableView();
             _activePanel.CloseButton.onClick.AddListener(CloseActivePanel);
+
+            //OnActivatePathpointPanel?.Invoke(pointView.PathPointType);
         }
 
         private void CloseActivePanel()
@@ -57,7 +62,7 @@ namespace PathPoints
 
         public void CleanUp()
         {
-            _rayCastController.OnMoveAction -= ActivatePointScreen;
+            _rayCastController.OnClickMoveAction -= ActivatePointScreen;
             _activePanel.CloseButton.onClick.RemoveAllListeners();
         }              
     }

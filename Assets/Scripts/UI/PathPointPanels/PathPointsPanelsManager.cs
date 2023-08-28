@@ -22,7 +22,7 @@ namespace PathPoints
             }
         }
 
-        public PathPointPanelView GetPathPointView(PathPointsTypes type)
+        public PathPointPanelView GetPathPointPanelView(PathPointsTypes type)
         {
             return _views[type];
         }

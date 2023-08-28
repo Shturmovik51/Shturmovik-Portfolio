@@ -8,11 +8,21 @@ using UnityEngine;
 public class PathPointsManager
 {
     private List<Transform> _pathPoints;
+    private Dictionary<PathPointsTypes, PathPointView> _pathPointViewsByType;
 
     public PathPointsManager(GameConfig config)
     {
         _pathPoints = config.PathPointsHolder.GetComponentsInChildren<Transform>().ToList();
         _pathPoints.Remove(config.PathPointsHolder.transform);
+
+        var views = config.PathPointsHolder.GetComponentsInChildren<PathPointView>().ToList();
+
+        _pathPointViewsByType = new Dictionary<PathPointsTypes, PathPointView>();
+
+        foreach (var view in views)
+        {
+            _pathPointViewsByType.Add(view.PathPointType, view);
+        }
     }
 
     public List<Transform> GetMovePath(Transform playerPosition, Transform targetPoint, MoveDirectonTypes direction)
@@ -67,5 +77,10 @@ public class PathPointsManager
         }
 
         return points;
+    }
+
+    public PathPointView GetPathPointView(PathPointsTypes type)
+    {
+        return _pathPointViewsByType[type];
     }
 }
