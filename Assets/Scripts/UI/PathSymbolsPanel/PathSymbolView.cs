@@ -22,48 +22,50 @@ namespace PathSymbols
             _movableImage.enabled = status;
         }
 
-        public void SelectView(Transform position)
+        public void SelectView(Transform position, bool isInstant)
         {
-            DOTween.Kill("Scale", "Move");
+            DOTween.Kill($"Scale{_pointType}");
+            DOTween.Kill($"Move{_pointType}");
 
             IsActive = true;
 
             var scaleSecuence = DOTween.Sequence();
-            scaleSecuence.SetId("Scale");
-            scaleSecuence.Append(transform.DOScale(1.2f, 0.3f));
+            scaleSecuence.SetId($"Scale{_pointType}");
+            scaleSecuence.Append(_symbolButton.transform.DOScale(1.2f, 0.3f));
 
             ActivateMovableImage(true);
-            SendMovableImageToPosition(position);
+
+            SendMovableImageToPosition(position, isInstant);
         }
 
         public void DeselectView()
         {
-            DOTween.Kill("Scale", "Move");
+            DOTween.Kill($"Scale{_pointType}");
+            DOTween.Kill($"Move{_pointType}");
 
             IsActive = false;
 
             var scaleSecuence = DOTween.Sequence();
-            scaleSecuence.SetId("Scale");
-            scaleSecuence.Append(transform.DOScale(1f, 0.3f));
-            scaleSecuence.Join(_movableImage.transform.DOScale(1f, 0.3f));
+            scaleSecuence.SetId($"Scale{_pointType}");
+            scaleSecuence.Append(_symbolButton.transform.DOScale(1f, 0.1f));
+            scaleSecuence.Join(_movableImage.transform.DOScale(1f, 0.1f));
+            //scaleSecuence.Join(_movableImage.DOFade(0f, 0.3f));
+            scaleSecuence.OnComplete(() => _movableImage.transform.position = transform.position);
 
             ActivateMovableImage(false);
-            _movableImage.transform.position = transform.position;
         }
 
-        private void SendMovableImageToPosition(Transform position)
-        {    
+        private void SendMovableImageToPosition(Transform position, bool isInstant)
+        {   
             var moveSecuence = DOTween.Sequence();
-            moveSecuence.SetId("Move");
+            moveSecuence.SetId($"Move{_pointType}");
             moveSecuence.Append(_movableImage.transform.DOMove(position.position, 0.3f));
             moveSecuence.Join(_movableImage.transform.DOScale(1.2f, 0.3f));
-        }
 
-        private void SetMovableImageToPosition(Transform position)
-        {
-
-        }
-
-
+            if (isInstant)
+            {
+                moveSecuence.Kill(true);
+            }
+        } 
     }
 }

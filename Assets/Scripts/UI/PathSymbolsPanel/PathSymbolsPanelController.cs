@@ -16,12 +16,10 @@ namespace PathSymbols
         private Dictionary<PathPointsTypes, PathSymbolView> _symbolViewsByTypes;
         private PathPointsTypes _lastPathPoint;
         private PathPointsTypes _currentPathPoint;
-        private PathPointsPanelsController _pathPointsPanelsController;
 
-        public PathSymbolsPanelController(GameConfig config, PathPointsPanelsController pathPointsPanelsController)
+        public PathSymbolsPanelController(GameConfig config)
         {
             _view = config.PathSymbolsPanelView;
-            _pathPointsPanelsController = pathPointsPanelsController;
 
             _symbolViewsByTypes = new Dictionary<PathPointsTypes, PathSymbolView>();
 
@@ -31,8 +29,6 @@ namespace PathSymbols
                 view.SymbolButton.onClick.AddListener(() => SelectPathSymbol(view.PointType));
                 view.ActivateMovableImage(false);
             }
-
-            //_pathPointsPanelsController.OnActivatePathpointPanel += SelectPathSymbol;
         }
 
         private void SelectPathSymbol(PathPointsTypes pointType)
@@ -46,7 +42,7 @@ namespace PathSymbols
             DeselectLastView();
 
             var symbolView = _symbolViewsByTypes[pointType];
-            symbolView.SelectView(_view.MovableImagePosition);
+            symbolView.SelectView(_view.MovableImagePosition, false);
 
             OnSelectPathSymbol?.Invoke(pointType);
         }
@@ -62,7 +58,7 @@ namespace PathSymbols
             DeselectLastView();
 
             var symbolView = _symbolViewsByTypes[pointType];
-            symbolView.SelectView(_view.MovableImagePosition);
+            symbolView.SelectView(_view.MovableImagePosition, true);
         }
 
         private void DeselectLastView()
@@ -75,14 +71,22 @@ namespace PathSymbols
             }
         }
 
+        public void DeselectCurrentView()
+        {
+            if (_currentPathPoint != PathPointsTypes.None)
+            {
+                var symbolView = _symbolViewsByTypes[_currentPathPoint];
+                symbolView.DeselectView();
+                // _currentPathPoint = PathPointsTypes.None;
+            }
+        }
+
         public void CleanUp()
         {
             foreach (var view in _view.SymbolViews)
             {               
                 view.SymbolButton.onClick.RemoveAllListeners();
             }
-
-            //_pathPointsPanelsController.OnActivatePathpointPanel -= SelectPathSymbol;
         }
     }
 }

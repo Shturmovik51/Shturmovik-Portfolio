@@ -72,7 +72,7 @@ namespace MoveSystem
                 _isMoving = true;
             } 
 
-            _pathPointsPanelsController.ActivatePointScreen(pathPointView);            
+            _pathPointsPanelsController.ActivatePointScreen(pathPointView, _pathSymbolsPanelController.DeselectCurrentView);            
         }
 
         private void Move()

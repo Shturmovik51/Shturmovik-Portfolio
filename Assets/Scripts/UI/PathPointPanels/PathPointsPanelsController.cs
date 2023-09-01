@@ -10,9 +10,9 @@ namespace PathPoints
     public class PathPointsPanelsController : ICleanable, IController
     {
         //public Action<PathPointsTypes> OnActivatePathpointPanel;
-
+        private Action _closeCallback;
         private PathPointsPanelsManager _manager;
-        private RayCastController _rayCastController;
+        //private RayCastController _rayCastController;
         private PathPointPanelView _activePanel;
         private PathPointView _activePoint;
         private Camera _camera;
@@ -21,20 +21,10 @@ namespace PathPoints
             _camera = Camera.main;
 
             _manager = manager;
-            _rayCastController = rayCastController;
-
-            //_rayCastController.OnMoveAction += ActivatePointScreen;
+            //_rayCastController = rayCastController;
         }
 
-        //public void LocalLateUpdate(float deltaTime)
-        //{
-        //    if (_activePanel != null)
-        //    {
-        //        _activePanel.transform.position = _camera.WorldToScreenPoint(_activePoint.transform.position);
-        //    }
-        //}
-
-        public void ActivatePointScreen(PathPointView pointView)
+        public void ActivatePointScreen(PathPointView pointView, Action closeCallback)
         {
             if (_activePanel != null)
             {
@@ -44,14 +34,11 @@ namespace PathPoints
             var panelView = _manager.GetPathPointPanelView(pointView.PathPointType);
 
             _activePanel = panelView;
-            _activePoint = pointView;
-
-            //_activePanel.transform.position = _camera.WorldToScreenPoint(_activePoint.transform.position);
+            _activePoint = pointView;           
 
             _activePanel.EnableView();
-            _activePanel.CloseButton.onClick.AddListener(CloseActivePanel);
-
-            //OnActivatePathpointPanel?.Invoke(pointView.PathPointType);
+            _activePanel.CloseButton.onClick.AddListener(CloseActivePanelWithCloseCallback);
+            _closeCallback = closeCallback;
         }
 
         private void CloseActivePanel()
@@ -60,9 +47,15 @@ namespace PathPoints
             _activePanel.CloseButton.onClick.RemoveAllListeners();
         }
 
+        private void CloseActivePanelWithCloseCallback()
+        {
+            _closeCallback();
+            CloseActivePanel();
+        }
+
         public void CleanUp()
         {
-            _rayCastController.OnClickMoveAction -= ActivatePointScreen;
+            //_rayCastController.OnClickMoveAction -= ActivatePointScreen;
             _activePanel.CloseButton.onClick.RemoveAllListeners();
         }              
     }

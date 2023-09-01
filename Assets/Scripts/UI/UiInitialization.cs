@@ -1,9 +1,6 @@
 using Core;
 using PathPoints;
 using PathSymbols;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using UserInputSystem;
 
 namespace UiElements {
@@ -21,7 +18,7 @@ namespace UiElements {
             var pathPointsManager = new PathPointsPanelsManager(config.PathPointsPanelsHolder);
             PathPointsPanelsController = new PathPointsPanelsController(pathPointsManager, rayCastController);
 
-            PathSymbolsPanelController = new PathSymbolsPanelController(config, PathPointsPanelsController);
+            PathSymbolsPanelController = new PathSymbolsPanelController(config);
 
             controllersManager.Add(ProfilePanelController);
             controllersManager.Add(PathPointsPanelsController);
