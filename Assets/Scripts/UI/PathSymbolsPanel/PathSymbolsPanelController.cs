@@ -16,8 +16,11 @@ namespace PathSymbols
         private Dictionary<PathPointsTypes, PathSymbolView> _symbolViewsByTypes;
         private PathPointsTypes _lastPathPoint;
         private PathPointsTypes _currentPathPoint;
+        private PathPointsPanelsController _pathPointsPanelsController;
 
-        public PathSymbolsPanelController(GameConfig config)
+        private bool _isPanelHidden;
+
+        public PathSymbolsPanelController(GameConfig config, PathPointsPanelsController pathPointsPanelsController)
         {
             _view = config.PathSymbolsPanelView;
 
@@ -29,6 +32,12 @@ namespace PathSymbols
                 view.SymbolButton.onClick.AddListener(() => SelectPathSymbol(view.PointType));
                 view.ActivateMovableImage(false);
             }
+
+            _pathPointsPanelsController = pathPointsPanelsController;
+            _pathPointsPanelsController.OnActivatePathpointPanel += ChangePanelVisibility;
+
+            _view.SetPanelHide();
+            _isPanelHidden = true;
         }
 
         private void SelectPathSymbol(PathPointsTypes pointType)
@@ -81,12 +90,38 @@ namespace PathSymbols
             }
         }
 
+        private void ChangePanelVisibility(bool isActivate)
+        {
+            if (isActivate)
+                UnhidePathSymbolsPanel();
+            else
+                HidePathSymbolsPanel();
+        }
+
+        private void HidePathSymbolsPanel()
+        {
+            if (_isPanelHidden) return;
+
+            _view.SetPanelHide();
+            _isPanelHidden = true;
+        }
+
+        private void UnhidePathSymbolsPanel()
+        {
+            if (!_isPanelHidden) return;
+
+            _view.SetPanelUnhide();
+            _isPanelHidden = false;
+        }
+
         public void CleanUp()
         {
             foreach (var view in _view.SymbolViews)
             {               
                 view.SymbolButton.onClick.RemoveAllListeners();
             }
+
+            _pathPointsPanelsController.OnActivatePathpointPanel -= ChangePanelVisibility;
         }
     }
 }

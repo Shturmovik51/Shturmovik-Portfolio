@@ -28,6 +28,7 @@ namespace PathSymbols
             DOTween.Kill($"Move{_pointType}");
 
             IsActive = true;
+            _movableImage.transform.SetParent(transform.parent.parent);
 
             var scaleSecuence = DOTween.Sequence();
             scaleSecuence.SetId($"Scale{_pointType}");
@@ -44,6 +45,7 @@ namespace PathSymbols
             DOTween.Kill($"Move{_pointType}");
 
             IsActive = false;
+            _movableImage.transform.SetParent(transform);
 
             var scaleSecuence = DOTween.Sequence();
             scaleSecuence.SetId($"Scale{_pointType}");

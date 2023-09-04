@@ -18,7 +18,7 @@ namespace UiElements {
             var pathPointsManager = new PathPointsPanelsManager(config.PathPointsPanelsHolder);
             PathPointsPanelsController = new PathPointsPanelsController(pathPointsManager, rayCastController);
 
-            PathSymbolsPanelController = new PathSymbolsPanelController(config);
+            PathSymbolsPanelController = new PathSymbolsPanelController(config, PathPointsPanelsController);
 
             controllersManager.Add(ProfilePanelController);
             controllersManager.Add(PathPointsPanelsController);
